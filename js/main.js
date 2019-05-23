@@ -13,7 +13,7 @@ let squaresUsed = 0;
 
 //Prompts the user
 const queryGridQuantity = function() {
-  return parseInt( prompt("What size grid do you want to play?") );
+  return parseInt( prompt("What size grid do you want to play? E.g. 3 = 3x3") );
 }; // End of queryGridQuantity
 
 let desiredGridSize = queryGridQuantity();
