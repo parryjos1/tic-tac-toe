@@ -3,7 +3,6 @@
 // 2. Generate 2D array to represent the backend
 
 // Global Variables
-
 let playerTurnCount = 1;
 let currentNoughtCross = 'X';
 let player1WinCount = 0;
@@ -52,6 +51,7 @@ const whosTurn = function() {
     playerTurnCount++;
     currentNoughtCross =  "O";
   }
+  console.log(`From inside WhosTurn currentNoughtCross: ${currentNoughtCross}`);
 }; // end of Whos turn function
 
 // Populate cell function
@@ -64,7 +64,11 @@ const populateCell = function(x, y, functionElement) {
 
 let posibleArrays = [];
 // Gets array of every posible combination
-const everyPosibleArray = function(targetRow, targetCol) {
+const everyPosibleArray = function(targetRow, targetCol, cross) {
+
+  let currentNoughtCross = cross;
+
+  console.log(`currentNoughtCross is: ${currentNoughtCross}`);
   //right
   const rightArray = [currentNoughtCross]
   for (i = targetCol; i < tttArray.length-1; i++) {
@@ -217,6 +221,7 @@ const everyPosibleArray = function(targetRow, targetCol) {
 const checkIfWinner = function( everyPosibleCombination ) {
   arrayToCheck = everyPosibleCombination;
   const winningCombo = currentNoughtCross.repeat(desiredGridSize);
+  console.log(`The winning combo is: ${winningCombo}`);
   for (i = 0; i<arrayToCheck.length; i++) {
     if (arrayToCheck[i] === winningCombo) {
       return true;
@@ -258,6 +263,35 @@ const isDraw = function( squaresUsed ) {
   }
 }; // End of isDraw()
 
+const dumbAI = function() {
+  // get free spaces
+  let currentCoordinates = [];
+  if (squaresUsed !== 0) {
+    let freeSpacesInGrid = [];
+    for (i=0; i<tttArray.length; i++) {
+      for (y=0; y<tttArray.length; y++) {
+        if (tttArray[i][y] === undefined) {
+          freeSpacesInGrid.push(`[${i}, ${y}]`);
+        }
+      }
+    }
+    // get a random number to choose from the grid
+    const randomNumberForGrid = Math.floor(Math.random()*freeSpacesInGrid.length);
+
+    // given a random number - update this with whoever's turn it is
+    const randomSquare = freeSpacesInGrid[randomNumberForGrid];
+    tttArray[randomSquare[1]][randomSquare[4]] = currentNoughtCross;
+    currentMark = currentNoughtCross;
+    $(`.grid-item[row="${randomSquare[1]}"][col="${randomSquare[4]}"]`).html(currentNoughtCross)
+    currentCoordinates.push(randomSquare[1]);
+    currentCoordinates.push(randomSquare[4]);
+    squaresUsed++
+    //return freeSpacesInGrid
+  }
+  whosTurn();
+  console.log(`currentCoordinates ${currentCoordinates}`);
+  return currentCoordinates
+}; // End of dumbAI()
 
 // Work out which cell we clicked on in reference to the 2D array
 $(".grid-item").on('click', function() {
@@ -267,24 +301,76 @@ $(".grid-item").on('click', function() {
   let targetCol = parseInt($(this).attr('col'));
   let currentMark = null;
 
-  // If the cell is empty run game functions
+  // If the cell is empty run game functions if clicked on
   if (tttArray[targetRow][targetCol] === undefined) {
     populateCell(targetRow, targetCol, $(this))
-    const allPositionsFromClick = everyPosibleArray(targetRow, targetCol)
+    const allPositionsFromClick = everyPosibleArray(targetRow, targetCol, 'X')
     squaresUsed++
+    posibleArrays = [];
     //checkIfWinner(allPositionsFromClick)
     if (checkIfWinner(allPositionsFromClick)) {
       //debugger;
-      alert('you won!')
+      alert(`${currentNoughtCross} wins this round!`)
       gameReset();
       displayScore(currentMark)
+      whosTurn(); //~~~~~~~~~~ Needs to be turned on for single player ~~~~~~~~~~~~~
     };
-
     if(isDraw(squaresUsed)) {
       gameReset();
       alert("It's a draw")
+      whosTurn();
     }
     whosTurn();
   };
 
+  // ~~~~~~~ A.I ~~~~~~~~~~~
+
+  if(isDraw(squaresUsed)) {
+    gameReset();
+    alert("It's a draw")
+  } else {
+    //debugger;
+    const dumbAIRun = dumbAI();
+
+    const aiX = parseInt(dumbAIRun[0])
+    const aiY = parseInt(dumbAIRun[1])
+    //currentNoughtCross = 'O';
+    const allAIPositions = everyPosibleArray(aiX, aiY, 'O');
+    console.log(`allAIPositions ${allAIPositions}`);
+
+    const checkifAIHasWon = function( array ) {
+
+      for (i=0; i<array.length; i++) {
+
+        if (array[i] === 'OOO') {
+          return true;
+          // posibleArrays = [];
+          // gameReset();
+          // displayScore(currentMark)
+        }
+      }
+
+    }
+
+    if(checkifAIHasWon(allAIPositions)) {
+      player2WinCount++
+      $('#player2Score').html(player2WinCount);
+      alert('O wins this round!')
+      gameReset();
+    }
+
+    // const checkifAIWon = function( coordinateArray ) {
+    //   let targetRow = parseInt(coordinateArray[0]);
+    //   let targetCol = parseInt(coordinateArray[1]);
+    //   // see if every possible array spot meets the conditions for this
+    //   //debugger;
+    //   //whosTurn();
+    //   currentNoughtCross = 'O'
+    //   const allAIPositions = everyPosibleArray(targetRow, targetCol);
+    //   console.log(`allAIPositions ${allAIPositions}`);
+
+    // }; // end of checkifwinner()
+    // checkifAIWon(dumbAIRun);
+    //whosTurn();
+  }
 });// End of clicked on
