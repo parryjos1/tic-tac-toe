@@ -6,6 +6,9 @@
 
 let playerTurnCount = 1;
 let currentNoughtCross = 'X';
+let player1WinCount = 0;
+let player2WinCount = 0;
+let squaresUsed = 0;
 
 // #1. Generate a grid of determinded size
 
@@ -54,7 +57,7 @@ const whosTurn = function() {
 // Populate cell function
 const populateCell = function(x, y, functionElement) {
     tttArray[x][y] = currentNoughtCross;
-    const currentMark = tttArray[x][y];
+    currentMark = tttArray[x][y];
     functionElement.html(tttArray[x][y])
 } // End of Populate cell
 
@@ -227,9 +230,33 @@ const gameReset = function() {
   $('.grid-container').children('div').each(function () {
     $(this).text(""); // "this" is the current element in the loop
   });
-
-
+  // Reset the grid
+  tttArray = new Array(desiredGridSize);
+  for (i=0; i < desiredGridSize; i++) {
+    tttArray[i] = new Array(desiredGridSize);
+  }
+  posibleArrays = [];
+  squaresUsed = 0;
 };// end of game reset
+
+const displayScore = function( currentMark ) {
+  if(currentNoughtCross === 'X') {
+    player1WinCount++
+    $('#player1Score').text(player1WinCount);
+  } else {
+    player2WinCount++
+    $('#player2Score').text(player2WinCount);
+    whosTurn()
+  };
+    whosTurn();
+};
+
+const isDraw = function( squaresUsed ) {
+  if (squaresUsed === (desiredGridSize * desiredGridSize)) {
+    whosTurn()
+    return true
+  }
+}; // End of isDraw()
 
 
 // Work out which cell we clicked on in reference to the 2D array
@@ -244,28 +271,20 @@ $(".grid-item").on('click', function() {
   if (tttArray[targetRow][targetCol] === undefined) {
     populateCell(targetRow, targetCol, $(this))
     const allPositionsFromClick = everyPosibleArray(targetRow, targetCol)
+    squaresUsed++
     //checkIfWinner(allPositionsFromClick)
     if (checkIfWinner(allPositionsFromClick)) {
       //debugger;
       alert('you won!')
-
       gameReset();
-
-      //let  tttArray = [...Array(desiredGridSize)].map(e => Array(desiredGridSize).fill());
-
-      tttArray = new Array(desiredGridSize);
-      for (i=0; i < desiredGridSize; i++) {
-        tttArray[i] = new Array(desiredGridSize);
-      }
-
-      posibleArrays = [];
-
+      displayScore(currentMark)
     };
+
+    if(isDraw(squaresUsed)) {
+      gameReset();
+      alert("It's a draw")
+    }
     whosTurn();
-    // ## Still to do
-    // Fucntin for draw
-    // reset function
-    // add to score if won
   };
 
 });// End of clicked on

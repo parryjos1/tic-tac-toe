@@ -12,3 +12,36 @@
   font-size: 30px;
   text-align: center;
 }
+
+
+.scoreboard-container{
+  margin-left: 40%;
+  font-size: 36px;
+}
+
+.scoreboard {
+  margin-top: 2%;
+}
+
+.playerHeadings {
+  display: inline-block;
+  margin-top: 1%;
+}
+
+#scoreboardHeading{
+  margin-left: 5%;
+}
+
+.playerScores{
+  display: inline-block;
+}
+
+#player1Score {
+  margin-left: 8%;
+  margin-top: 1%;
+}
+
+#player2Score {
+  margin-left: 18%;
+  margin-top: 1%;
+}
