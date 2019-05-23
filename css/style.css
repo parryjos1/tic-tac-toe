@@ -1,45 +1,14 @@
 .grid-container {
   display: grid;
-  grid-template-columns: auto auto auto;
+  /* grid-template-columns: auto auto auto; */
+  /* grid-template-columns: auto auto auto auto; */
   background-color: #2196F3;
   padding: 10px;
 }
 .grid-item {
   background-color: rgba(255, 255, 255, 0.8);
   border: 1px solid rgba(0, 0, 0, 0.8);
-  padding: 80px;
+  padding: 20px;
   font-size: 30px;
   text-align: center;
-}
-
-.scoreboard-container{
-  margin-left: 40%;
-  font-size: 36px;
-}
-
-.scoreboard {
-  margin-top: 2%;
-}
-
-.playerHeadings {
-  display: inline-block;
-  margin-top: 1%;
-}
-
-#scoreboardHeading{
-  margin-left: 5%;
-}
-
-.playerScores{
-  display: inline-block;
-}
-
-#player1Score {
-  margin-left: 8%;
-  margin-top: 1%;
-}
-
-#player2Score {
-  margin-left: 18%;
-  margin-top: 1%;
 }
