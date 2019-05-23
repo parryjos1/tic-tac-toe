@@ -5,6 +5,10 @@ let playerTurnCount = 1;
 const player1 = 'X';
 const player2 = 'O';
 let currentDetermineWinner = null;
+let squaresUsed = 0;
+let player1WinCount = 0;
+let player2WinCount = 0;
+
 
 // 2D Array of Tic-Tac-Toe values
 let tttArray=new Array(3);
@@ -26,6 +30,7 @@ $(".grid-item").on('click', function() {
     // Check to see there is free position
     if($(this).html() === '') {
       $(this).html(tttArray[targetRow][targetCol]);
+      squaresUsed++
     } else {
       // runs again to keep player's turn
       whosTurn()
@@ -36,6 +41,7 @@ $(".grid-item").on('click', function() {
     tttArray[targetRow][targetCol] = 'O';
     if($(this).html() === '') {
       $(this).html(tttArray[targetRow][targetCol]);
+      squaresUsed++
     } else {
       whosTurn()
     }
@@ -45,154 +51,157 @@ $(".grid-item").on('click', function() {
 
   // Gets all posible positions from clicked on squares
   // and returns an array of posible combinations
-  const arraysInRange = function() {
+  const arraysInRange = function( resetCounter) {
     let posibleArrays = [];
 
-    //right
-    const rightArray = [currentMark]
-    for (i = targetCol; i < tttArray.length-1; i++) {
-      rightArray.push(tttArray[targetRow][i+1])
-    }
-    posibleArrays.push(rightArray.join(''));
+    if(resetCounter === 1) {
 
-    //left
-    const leftArray = [currentMark]
-    for (i = targetCol; i > 0; i--) {
-      leftArray.push(tttArray[targetRow][i-1])
-    }
-    posibleArrays.push(leftArray.join(''));
-
-    //Top
-    const topArray = [currentMark]
-    for (i = targetRow; i > 0; i--) {
-      topArray.push(tttArray[i-1][targetCol])
-    }
-    posibleArrays.push(topArray.join(''));
-
-    // Bottom
-    const bottomArray = [currentMark]
-    for (i = targetRow; i < tttArray.length-1; i++) {
-      bottomArray.push(tttArray[i+1][targetCol])
-    }
-    posibleArrays.push(bottomArray.join(''));
-
-    //middleLeftRight
-    const middleLeftRight = [currentMark]
-    //pushes right
-    middleLeftRight.push(tttArray[targetRow][targetCol+1])
-    //pushes left
-    middleLeftRight.push(tttArray[targetRow][targetCol-1])
-    posibleArrays.push(middleLeftRight.join(''));
-
-    //middleUpDown
-    const middleUpDown = [currentMark];
-      if (targetRow === 1) {
-        middleUpDown.push(tttArray[targetRow-1][targetCol])
-        middleUpDown.push(tttArray[targetRow+1][targetCol])
-        posibleArrays.push(middleUpDown.join(''));
-      };
-
-    // #####DIAGONAL -- involves 6 checks
-
-    //Function to check if a suggested index is valid
-    const isValidIndex = function( x, y ) {
-      if( x >= 0 && y >= 0 && x <= tttArray.length-1 && y <= tttArray.length-1) {
-      return true;
-      console.log('its true');
-    }
-    }; //End of isValidIndex
-
-    //twoRightUp;
-    // searches right and up by two positions
-    const twoRightUp = [currentMark]
-    let rowCounterRU = targetRow;
-    for (i = targetCol; i < tttArray.length-1; i++) {
-      if(isValidIndex(rowCounterRU-1, i+1)) {
-      twoRightUp.push(tttArray[rowCounterRU-1][i+1])
-      rowCounterRU--
-    }
-    }
-    posibleArrays.push(twoRightUp.join(''));
-
-    // twoLeftDown;
-    // Searches Left and Down
-    const twoLeftDown = [currentMark]
-    let rowCounterLD = targetRow;
-    for (i = targetCol; i > 0; i--) {
-      if(isValidIndex(rowCounterLD+1, i-1)) {
-      twoLeftDown.push(tttArray[rowCounterLD+1][i-1])
-      rowCounterLD++
-    }
-    }
-    posibleArrays.push(twoLeftDown.join(''));
-
-    //oneWayLeftUp
-    // Searches left and up
-    const oneWayLeftUp = [currentMark]
-    let rowCounterLU = targetRow;
-    for (i = targetCol; i > 0; i--) {
-      if(isValidIndex(rowCounterLU-1, i-1)) {
-      oneWayLeftUp.push(tttArray[rowCounterLU-1][i-1])
-      rowCounterLU--
-    }
-    }
-    posibleArrays.push(oneWayLeftUp.join(''));
-
-    //oneWayRightDown
-    // Searches down and right
-    const oneWayRightDown = [currentMark]
-    let rowCounterRD = targetRow;
-    for (i = targetCol; i < tttArray.length-1; i++) {
-      if(isValidIndex(rowCounterRD+1, i+1)) {
-      oneWayRightDown.push(tttArray[rowCounterRD+1][i+1])
-      rowCounterRD++
-    }
-    }
-    posibleArrays.push(oneWayRightDown.join(''));
-
-    //bothWaysTopRight
-    // Searchs boths sides of position starting top right
-    const bothWaysTopRight = [currentMark];
-    for (i = 1; i < tttArray.length-1; i++ ) {
-      //debugger;
-      let upRightRowTR = targetRow;
-      let downLeftRowTR = targetRow
-      let upRightColumnTR = targetCol;
-      let downLeftColumnTR = targetCol;
-      if(isValidIndex(upRightRowTR-1, upRightColumnTR+1) && isValidIndex(downLeftRowTR+1, downLeftColumnTR-1)) {
-        bothWaysTopRight.push(tttArray[upRightRowTR-1][upRightColumnTR+1])
-        bothWaysTopRight.push(tttArray[downLeftRowTR+1][downLeftColumnTR-1])
-        upRightRowTR--
-        downLeftRowTR++
-        upRightColumnTR++
-        downLeftColumnTR--
+      //right
+      const rightArray = [currentMark]
+      for (i = targetCol; i < tttArray.length-1; i++) {
+        rightArray.push(tttArray[targetRow][i+1])
       }
-    }// End of for loop
-    posibleArrays.push(bothWaysTopRight.join(''));
+      posibleArrays.push(rightArray.join(''));
 
-    //bothWaysTopLeft
-    // Searches boths sides of position starting top left
-    const bothWaysTopLeft = [currentMark];
-    for (i = 1; i < tttArray.length-1; i++ ) {
-      //debugger;
-      let upRightRowTL = targetRow;
-      let downLeftRowTL = targetRow
-      let upRightColumnTL = targetCol;
-      let downLeftColumnTL = targetCol;
-      if(isValidIndex(upRightRowTL-1, upRightColumnTL-1) && isValidIndex(downLeftRowTL+1, downLeftColumnTL+1)) {
-        bothWaysTopLeft.push(tttArray[upRightRowTL-1][upRightColumnTL-1])
-        bothWaysTopLeft.push(tttArray[downLeftRowTL+1][downLeftColumnTL+1])
-        upRightRowTL--
-        downLeftRowTL++
-        upRightColumnTL--
-        downLeftColumnTL++
+      //left
+      const leftArray = [currentMark]
+      for (i = targetCol; i > 0; i--) {
+        leftArray.push(tttArray[targetRow][i-1])
       }
-    }// End of for loop
-    posibleArrays.push(bothWaysTopLeft.join(''));
+      posibleArrays.push(leftArray.join(''));
 
-    // DONT DELETE: Logs all posible positions relative to clicked square
-    console.log(`posible Arrays finals: ${posibleArrays}`);
-    return posibleArrays
+      //Top
+      const topArray = [currentMark]
+      for (i = targetRow; i > 0; i--) {
+        topArray.push(tttArray[i-1][targetCol])
+      }
+      posibleArrays.push(topArray.join(''));
+
+      // Bottom
+      const bottomArray = [currentMark]
+      for (i = targetRow; i < tttArray.length-1; i++) {
+        bottomArray.push(tttArray[i+1][targetCol])
+      }
+      posibleArrays.push(bottomArray.join(''));
+
+      //middleLeftRight
+      const middleLeftRight = [currentMark]
+      //pushes right
+      middleLeftRight.push(tttArray[targetRow][targetCol+1])
+      //pushes left
+      middleLeftRight.push(tttArray[targetRow][targetCol-1])
+      posibleArrays.push(middleLeftRight.join(''));
+
+      //middleUpDown
+      const middleUpDown = [currentMark];
+        if (targetRow === 1) {
+          middleUpDown.push(tttArray[targetRow-1][targetCol])
+          middleUpDown.push(tttArray[targetRow+1][targetCol])
+          posibleArrays.push(middleUpDown.join(''));
+        };
+
+      // #####DIAGONAL -- involves 6 checks
+
+      //Function to check if a suggested index is valid
+      const isValidIndex = function( x, y ) {
+        if( x >= 0 && y >= 0 && x <= tttArray.length-1 && y <= tttArray.length-1) {
+        return true;
+      }
+      }; //End of isValidIndex
+
+      //twoRightUp;
+      // searches right and up by two positions
+      const twoRightUp = [currentMark]
+      let rowCounterRU = targetRow;
+      for (i = targetCol; i < tttArray.length-1; i++) {
+        if(isValidIndex(rowCounterRU-1, i+1)) {
+        twoRightUp.push(tttArray[rowCounterRU-1][i+1])
+        rowCounterRU--
+      }
+      }
+      posibleArrays.push(twoRightUp.join(''));
+
+      // twoLeftDown;
+      // Searches Left and Down
+      const twoLeftDown = [currentMark]
+      let rowCounterLD = targetRow;
+      for (i = targetCol; i > 0; i--) {
+        if(isValidIndex(rowCounterLD+1, i-1)) {
+        twoLeftDown.push(tttArray[rowCounterLD+1][i-1])
+        rowCounterLD++
+      }
+      }
+      posibleArrays.push(twoLeftDown.join(''));
+
+      //oneWayLeftUp
+      // Searches left and up
+      const oneWayLeftUp = [currentMark]
+      let rowCounterLU = targetRow;
+      for (i = targetCol; i > 0; i--) {
+        if(isValidIndex(rowCounterLU-1, i-1)) {
+        oneWayLeftUp.push(tttArray[rowCounterLU-1][i-1])
+        rowCounterLU--
+      }
+      }
+      posibleArrays.push(oneWayLeftUp.join(''));
+
+      //oneWayRightDown
+      // Searches down and right
+      const oneWayRightDown = [currentMark]
+      let rowCounterRD = targetRow;
+      for (i = targetCol; i < tttArray.length-1; i++) {
+        if(isValidIndex(rowCounterRD+1, i+1)) {
+        oneWayRightDown.push(tttArray[rowCounterRD+1][i+1])
+        rowCounterRD++
+      }
+      }
+      posibleArrays.push(oneWayRightDown.join(''));
+
+      //bothWaysTopRight
+      // Searchs boths sides of position starting top right
+      const bothWaysTopRight = [currentMark];
+      for (i = 1; i < tttArray.length-1; i++ ) {
+        //debugger;
+        let upRightRowTR = targetRow;
+        let downLeftRowTR = targetRow
+        let upRightColumnTR = targetCol;
+        let downLeftColumnTR = targetCol;
+        if(isValidIndex(upRightRowTR-1, upRightColumnTR+1) && isValidIndex(downLeftRowTR+1, downLeftColumnTR-1)) {
+          bothWaysTopRight.push(tttArray[upRightRowTR-1][upRightColumnTR+1])
+          bothWaysTopRight.push(tttArray[downLeftRowTR+1][downLeftColumnTR-1])
+          upRightRowTR--
+          downLeftRowTR++
+          upRightColumnTR++
+          downLeftColumnTR--
+        }
+      }// End of for loop
+      posibleArrays.push(bothWaysTopRight.join(''));
+
+      //bothWaysTopLeft
+      // Searches boths sides of position starting top left
+      const bothWaysTopLeft = [currentMark];
+      for (i = 1; i < tttArray.length-1; i++ ) {
+        //debugger;
+        let upRightRowTL = targetRow;
+        let downLeftRowTL = targetRow
+        let upRightColumnTL = targetCol;
+        let downLeftColumnTL = targetCol;
+        if(isValidIndex(upRightRowTL-1, upRightColumnTL-1) && isValidIndex(downLeftRowTL+1, downLeftColumnTL+1)) {
+          bothWaysTopLeft.push(tttArray[upRightRowTL-1][upRightColumnTL-1])
+          bothWaysTopLeft.push(tttArray[downLeftRowTL+1][downLeftColumnTL+1])
+          upRightRowTL--
+          downLeftRowTL++
+          upRightColumnTL--
+          downLeftColumnTL++
+        }
+      }// End of for loop
+      posibleArrays.push(bothWaysTopLeft.join(''));
+    } // End of if statement
+
+      // DONT DELETE: Logs all posible positions relative to clicked square
+      console.log(`posible Arrays finals: ${posibleArrays}`);
+      return posibleArrays
+
   } // end of array's in range function
 
   const checkIfWinner = function( array ) {
@@ -201,14 +210,57 @@ $(".grid-item").on('click', function() {
     for (i = 0; i<arrayToCheck.length; i++) {
       if (arrayToCheck[i] === currentDetermineWinner) {
         alert("You won!")
+        //figure out which player won
+        if(currentMark === 'X'){
+          console.log('player1 won');
+          player1WinCount++
+        } else {
+          player2WinCount++
+        }
+        // add to their score
+        // append their score to the HTML
+        // reset the board and keep the score
+
+        const displayScore = function(p1, p2) {
+          $('#player1Score').text(p1);
+          $('#player2Score').text(p2);
+        };// end of display score
+
+        const resetBoard = function() {
+
+          let tttArray=new Array(3);
+          for (i=0; i <3; i++)
+          tttArray[i]=new Array(3)
+
+          // Clear the board
+          // reset the arraysInRange function
+          arraysInRange(0)
+
+          //How is the  board populated
+          $('.grid-container').children('div').each(function () {
+            $(this).text(""); // "this" is the current element in the loop
+          });
+
+          squaresUsed = 0;
+          playerTurnCount = 1;
+
+        }// end of resetBoard
+        resetBoard()
+        displayScore(player1WinCount, player2WinCount)
+
+
       }
     }
-    if(squaresUsed) = 9)
   }; // End of Check if Winner()
 
-  allPotentialSquares = arraysInRange()
+  let allPotentialSquares = arraysInRange(1)
   checkIfWinner(allPotentialSquares)
 
+  // Checks if  it's a draw
+  // should fix with if squares are actuall
+  if(squaresUsed === (tttArray.length * tttArray.length)) {
+    alert("It's a draw")
+  }
 }) // End of clicked on
 
 
