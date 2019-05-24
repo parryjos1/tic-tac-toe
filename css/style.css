@@ -1,47 +1,87 @@
+h1 {
+  font-family: 'Press Start 2P', cursive;
+  text-align: center;
+  font-size: 45px;
+}
+
+/* .margin-container {
+  margin: 0 auto;
+} */
+
 .grid-container {
   display: grid;
-  /* grid-template-columns: auto auto auto; */
-  /* grid-template-columns: auto auto auto auto; */
-  background-color: #2196F3;
-  padding: 10px;
+  /* grid-template-columns: auto auto auto;
+  grid-template-columns: auto auto auto auto; */
+  /* padding: 10px; */
+
+  /* column-gap: 3%; */
+  /* row-gap: 3%; */
+
+
+  width: 32%;
+  margin: 0 auto;
+
 }
 .grid-item {
-  background-color: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(0, 0, 0, 0.8);
+  background-color: #2196F3;
   padding: 20px;
-  font-size: 30px;
+  font-size: 68px;
   text-align: center;
+  height: 7vw;
+  width: 7vw;
+  margin: 2px;
+  border-radius: 20px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 
 .scoreboard-container{
-  margin-left: 40%;
-  font-size: 36px;
+  margin: 2% 30%;
+  font-size: 20px;
+  /* background-color: #2196F3; */
+  background-color: #2196F3;
+  text-align: center;
+  color: white;
+  border-radius: 30px;
+  font-family: 'Press Start 2P', cursive;
 }
 
 .scoreboard {
   margin-top: 2%;
+  padding: 5%;
 }
 
 .playerHeadings {
   display: inline-block;
-  margin-top: 1%;
+  /* margin-top: 1%; */
 }
 
 #scoreboardHeading{
-  margin-left: 5%;
+  /* margin-left: 5%; */
+  font-size: 35px;
 }
 
-.playerScores{
-  display: inline-block;
+.p1p2 {
+  margin-top: 4%;
+}
+
+.scores {
+  background-color: black;
+  color: red;
+  border-radius: 0 0 30px 30px;
+  padding: 3%;
+  font-size: 50px;
 }
 
 #player1Score {
-  margin-left: 8%;
+  margin-right: 10%;
   margin-top: 1%;
 }
 
 #player2Score {
-  margin-left: 18%;
+  margin-left: 15%;
   margin-top: 1%;
 }
