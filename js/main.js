@@ -359,18 +359,5 @@ $(".grid-item").on('click', function() {
       gameReset();
     }
 
-    // const checkifAIWon = function( coordinateArray ) {
-    //   let targetRow = parseInt(coordinateArray[0]);
-    //   let targetCol = parseInt(coordinateArray[1]);
-    //   // see if every possible array spot meets the conditions for this
-    //   //debugger;
-    //   //whosTurn();
-    //   currentNoughtCross = 'O'
-    //   const allAIPositions = everyPosibleArray(targetRow, targetCol);
-    //   console.log(`allAIPositions ${allAIPositions}`);
-
-    // }; // end of checkifwinner()
-    // checkifAIWon(dumbAIRun);
-    //whosTurn();
   }
 });// End of clicked on
